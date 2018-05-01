@@ -4,7 +4,7 @@
   "description": "Component development Framework",
   "main": "copper-framework/index.html",
   "scripts": {
-    "start": "live-server ./src --port=5000"
+    "start": "live-server --port=5000"
   },
   "keywords": [
     "web-component",

@@ -21,35 +21,37 @@ module.exports = {
         try {
             _this.$config = _this.getConfig();
         } catch (e) {
-            throw(new Error(chalk.red("No cf-config.json file found in project root.")));
+            throw (new Error(chalk.red("No cf-config.json file found in project root.")));
         }
 
         // Get data.
         try {
             _this.$data = _this.getData();
         } catch (e) {
-            throw(new Error(chalk.red("No data.json file found in " + _this.$config.path )));
+            throw (new Error(chalk.red("No data.json file found in " + _this.$config.path)));
         }
     },
 
-    setup: function(path, callback) {
+    setup: function(_path, callback) {
         var _this = this,
             error = false;
 
-        fs.exists(path, function(r) {
-            if (r) {
-                throw(new Error(chalk.red('Pattern library has already been initialized.')));
-            }
-        });
+        if (path.resolve(_path) !== process.cwd()) {
+            fs.exists(_path, function(r) {
+                if (r) {
+                    throw (new Error(chalk.red('Component library has already been initialized.')));
+                }
+            });
+        }
 
-        _this.saveConfig(path, function() {
-            mkdirp(path, function (err) {
+        _this.saveConfig(_path, function() {
+            mkdirp(_path, function(err) {
                 if (err) {
                     console.error(chalk.red('Error: ' + err));
                     error = true;
                 }
 
-                fs.copy(_this.pathify(_this.module_path + '/_template'), path, function (err) {
+                fs.copy(_this.pathify(_this.module_path + '/_template'), _path, function(err) {
                     if (err) {
                         console.log(chalk.red('Error: ' + err));
                         error = true;
@@ -62,14 +64,14 @@ module.exports = {
                 });
             });
 
-            return ! error;
+            return !error;
         });
     },
 
     updateVersion: function(number) {
         this.$data.version = number;
 
-        this.saveData(function(){});
+        this.saveData(function() {});
     },
 
     update: function(callback) {
@@ -77,7 +79,7 @@ module.exports = {
 
         fs.exists(_this.$config.path, function(r) {
             if (!r) {
-                throw(new Error(chalk.red('No pattern library found to update.')));
+                throw (new Error(chalk.red('No pattern library found to update.')));
             }
         });
 
@@ -92,7 +94,7 @@ module.exports = {
          * If updating from pre-1.7.0 we need to add in the
          * default titles.
          */
-        if(!_this.$data.theme.hasOwnProperty("titles")) {
+        if (!_this.$data.theme.hasOwnProperty("titles")) {
             _this.$data.theme.titles = {
                 "library_title": "Pattern Library",
                 "pages_title": "Overview",
@@ -128,7 +130,7 @@ module.exports = {
         console.log(chalk.grey('----------------------------------------------------------------'));
         console.log();
 
-        if(groups.length) {
+        if (groups.length) {
             for (var i = 0; i < groups.length; i++) {
                 var g = groups[i];
 
@@ -157,7 +159,7 @@ module.exports = {
 
         fs.writeFile(_this.pathify(this.$root + '/cf-config.json'), JSON.stringify({
             path: path
-        }, null, 4), function (err) {
+        }, null, 4), function(err) {
             if (err) {
                 console.log(chalk.red('Error: ' + err));
                 error = true;
@@ -166,14 +168,14 @@ module.exports = {
             return callback();
         });
 
-        return ! error;
+        return !error;
     },
 
     saveData: function(callback) {
         var _this = this,
             error = false;
 
-        fs.writeFile(_this.pathify(_this.$config.path + '/data.json'), JSON.stringify(_this.$data, null, 4), function (err) {
+        fs.writeFile(_this.pathify(_this.$config.path + '/data.json'), JSON.stringify(_this.$data, null, 4), function(err) {
             if (err) {
                 console.log(chalk.red('Error: ' + err));
                 error = true;
@@ -182,7 +184,7 @@ module.exports = {
             return callback();
         });
 
-        return ! error;
+        return !error;
     },
 
     getGroupIndex: function(group) {
@@ -210,7 +212,7 @@ module.exports = {
     createGroupFolder: function(group_path, callback) {
         var _this = this;
 
-        callback = typeof callback !== 'undefined' ? callback : function(){};
+        callback = typeof callback !== 'undefined' ? callback : function() {};
 
         fs.mkdir(group_path, function(err) {
             if (err) {
@@ -230,7 +232,7 @@ module.exports = {
 
         fs.exists(_this.pathify(group_path + '/description.md'), function(r) {
 
-            if(!r) {
+            if (!r) {
                 fs.writeFile(_this.pathify(group_path + '/description.md'), '', function(err) {
                     if (err) {
                         console.log(chalk.red('Error: ' + err));
@@ -254,11 +256,11 @@ module.exports = {
             }
         });
 
-        return ! error;
+        return !error;
     },
 
     createComponentFolder: function(component_path, callback) {
-        callback = typeof callback !== 'undefined' ? callback : function(){};
+        callback = typeof callback !== 'undefined' ? callback : function() {};
 
         var _this = this,
             error = false;
@@ -284,12 +286,21 @@ module.exports = {
                         return;
                     }
 
+                    // fs.writeFile(_this.pathify(component_path + '/app.ts'), '', function(err) {
+                    //     if (err) {
+                    //         console.log(chalk.red('Error: ' + err));
+                    //         error = true;
+                    //         return;
+                    //     }
+
+                    //     return callback();
+                    // });
                     return callback();
                 });
             });
         });
 
-        return ! error;
+        return !error;
     },
 
     createComponentFiles: function(component) {
@@ -299,7 +310,7 @@ module.exports = {
             error = false;
 
         fs.exists(_this.pathify(group_path), function(r) {
-            if(r) {
+            if (r) {
                 _this.createComponentFolder(component_path);
             } else {
                 _this.createGroupFolder(group_path, function() {
@@ -308,7 +319,7 @@ module.exports = {
             }
         });
 
-        return ! error;
+        return !error;
     },
 
     moveComponentFiles: function(original_component, edited_component) {
@@ -318,7 +329,7 @@ module.exports = {
             d_path = d_group_path + '/' + edited_component.name,
             error = false;
 
-        if(o_path != d_path) {
+        if (o_path != d_path) {
             fs.move(_this.pathify(o_path), _this.pathify(d_path), function(err) {
                 if (err) {
                     console.error(chalk.red('Error: ' + err));
@@ -329,7 +340,7 @@ module.exports = {
             });
         }
 
-        return ! error;
+        return !error;
     },
 
     moveGroupFolder: function(original_group, edited_group) {
@@ -338,7 +349,7 @@ module.exports = {
             dPath = this.$config.path + '/components/' + edited_group.name,
             error = false;
 
-        if(oPath != dPath) {
+        if (oPath != dPath) {
             fs.move(_this.pathify(oPath), _this.pathify(dPath), function(err) {
                 if (err) {
                     console.error(chalk.red('Error: ' + err));
@@ -347,7 +358,7 @@ module.exports = {
             });
         }
 
-        return ! error;
+        return !error;
     },
 
     deleteComponentFiles: function(group_name) {
@@ -362,7 +373,7 @@ module.exports = {
             }
         });
 
-        return ! error;
+        return !error;
     },
 
     validateComponent: function(group_name) {
@@ -436,7 +447,7 @@ module.exports = {
         for (var i = 0; i < this.$data.groups.length; i++) {
             var g = this.$data.groups[i];
 
-            if(exclude_group != g.name) {
+            if (exclude_group != g.name) {
                 choices.push({
                     name: g.name,
                     value: g.name
@@ -466,7 +477,7 @@ module.exports = {
         for (var i = 0; i < _this.$data.groups[groupIndex].components.length; i++) {
             var c = _this.$data.groups[groupIndex].components[i];
 
-            if(first && c.name != component.name) {
+            if (first && c.name != component.name) {
                 choices.push({
                     name: 'Position first',
                     value: 0
@@ -474,13 +485,13 @@ module.exports = {
             }
             first = false;
 
-            if(c.name == component.name) {
-                if(i != 0) choices.pop();
+            if (c.name == component.name) {
+                if (i != 0) choices.pop();
                 currentPosition = i;
                 passedCurrentPosition = true;
             }
 
-            if(c.name != component.name) {
+            if (c.name != component.name) {
                 choices.push({
                     name: 'Position after ' + chalk.yellow(c.name),
                     value: passedCurrentPosition ? i : i + 1
@@ -512,7 +523,7 @@ module.exports = {
         for (var i = 0; i < _this.$data.groups.length; i++) {
             var g = _this.$data.groups[i];
 
-            if(first && g.name != group.name) {
+            if (first && g.name != group.name) {
                 choices.push({
                     name: 'Position first',
                     value: 0
@@ -520,13 +531,13 @@ module.exports = {
             }
             first = false;
 
-            if(g.name == group.name) {
-                if(i != 0) choices.pop();
+            if (g.name == group.name) {
+                if (i != 0) choices.pop();
                 currentPosition = i;
                 passedCurrentPosition = true;
             }
 
-            if(g.name != group.name) {
+            if (g.name != group.name) {
                 choices.push({
                     name: 'Position after ' + chalk.yellow(g.name),
                     value: passedCurrentPosition ? i : i + 1
@@ -577,11 +588,11 @@ module.exports = {
         var _this = this,
             parts = group_name.split('/');
 
-        for(var i = 0; i < _this.$data.groups.length; i++) {
-            for(var j = 0; j < _this.$data.groups[i].components.length; j++) {
+        for (var i = 0; i < _this.$data.groups.length; i++) {
+            for (var j = 0; j < _this.$data.groups[i].components.length; j++) {
                 var c = _this.$data.groups[i].components[j];
 
-                if(c.group == parts[0] && c.name == parts[1]) {
+                if (c.group == parts[0] && c.name == parts[1]) {
                     return c;
                 }
             }
@@ -593,7 +604,7 @@ module.exports = {
     validateSlug: function(string) {
         var slug = string.match(/^[a-z0-9-]+$/);
 
-        return this.validateString(string) && slug && !! slug.length;
+        return this.validateString(string) && slug && !!slug.length;
     },
 
     validateString: function(string) {
@@ -601,7 +612,7 @@ module.exports = {
     },
 
     pathify: function(path) {
-        if(isWindows()) {
+        if (isWindows()) {
             return path.replace(/(\/)/g, "\\");
         }
 
