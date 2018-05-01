@@ -21,7 +21,7 @@ module.exports = {
         try {
             _this.$config = _this.getConfig();
         } catch (e) {
-            throw(new Error(chalk.red("No astrum-config.json file found in project root.")));
+            throw(new Error(chalk.red("No cf-config.json file found in project root.")));
         }
 
         // Get data.
@@ -108,7 +108,7 @@ module.exports = {
     getConfig: function() {
         var _this = this;
 
-        return JSON.parse(fs.readFileSync(_this.pathify(_this.$root + '/astrum-config.json')));
+        return JSON.parse(fs.readFileSync(_this.pathify(_this.$root + '/cf-config.json')));
     },
 
     getData: function() {
@@ -155,7 +155,7 @@ module.exports = {
         var _this = this,
             error = false;
 
-        fs.writeFile(_this.pathify(this.$root + '/astrum-config.json'), JSON.stringify({
+        fs.writeFile(_this.pathify(this.$root + '/cf-config.json'), JSON.stringify({
             path: path
         }, null, 4), function (err) {
             if (err) {

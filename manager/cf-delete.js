@@ -8,14 +8,14 @@ var program = require('commander'),
 utils.init();
 
 program
-    .description(chalk.yellow('Delete a pattern library component or group.'))
+    .description(chalk.yellow('Delete a component or group.'))
     .option('-g, --group [group_name]', 'delete group');
 
 /**
  * Override argv[1] so that usage command is
  * formatted correctly.
  */
-process.argv[1] = 'astrum delete';
+process.argv[1] = 'cf delete';
 
 program.parse(process.argv);
 

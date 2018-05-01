@@ -29,9 +29,9 @@ if (program.instance) {
     try {
         if(utils.getConfig()) {
             utils.init();
-            console.log(chalk.grey("This Astrum instance version is: ") + chalk.green(utils.$data.version));
+            console.log(chalk.grey("This Copper Framework instance version is: ") + chalk.green(utils.$data.version));
         }
     } catch (e) {
-        console.log(chalk.red("Astrum has not been initialised."));
+        console.log(chalk.red("Copper Framework has not been initialised."));
     }
 }

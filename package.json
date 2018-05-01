@@ -1,17 +1,17 @@
 {
-  "name": "astrum",
-  "version": "1.9.5",
-  "description": "A lightweight pattern library designed to be included with any web project.",
-  "main": "./manager/astrum.js",
+  "name": "copper-framework",
+  "version": "0.1.0",
+  "description": "A lightweight component library designed to be included with any web project.",
+  "main": "./manager/cf.js",
   "scripts": {
     "test": "snyk test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NoDivide/astrum.git"
+    "url": "git+https://github.com/arvindr21/copper-framework.git"
   },
   "keywords": [
-    "pattern",
+    "component",
     "library",
     "styleguide",
     "front-end"
@@ -19,12 +19,12 @@
   "author": "Ryan Taylor <ryan@nodividestudio.com> (http://nodividestudio.com)",
   "license": "MIT",
   "bin": {
-    "astrum": "./manager/astrum.js"
+    "cf": "./manager/cf.js"
   },
   "bugs": {
-    "url": "https://github.com/NoDivide/astrum/issues"
+    "url": "https://github.com/arvindr21/copper-framework/issues"
   },
-  "homepage": "https://github.com/NoDivide/astrum#readme",
+  "homepage": "https://github.com/arvindr21/copper-framework#readme",
   "dependencies": {
     "chalk": "^1.1.3",
     "commander": "^2.9.0",

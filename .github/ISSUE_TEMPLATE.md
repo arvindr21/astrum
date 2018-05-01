@@ -16,4 +16,4 @@ Platform:
 OS Version:
 Node Version:
 NPM Version:
-Astrum Version:
+copper-framework Version:

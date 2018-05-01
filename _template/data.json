@@ -1,15 +1,15 @@
 {
-    "project_logo": null,
-    "project_favicon": "favicon.png",
-    "project_name": null,
-    "project_url": null,
-    "copyright_start_year": null,
+    "project_logo": "logo.png",
+    "project_favicon": "favicon.ico",
+    "project_name": "Copper Framework",
+    "project_url": "https://github.com/arvindr21/copper-framework",
+    "copyright_start_year": 2018,
     "client_name": null,
     "client_url": null,
     "creators": [
         {
-            "name": null,
-            "url": null
+            "name": "Arvind Ravulavaru",
+            "url": "https://github.com/arvindr21"
         }
     ],
     "theme": {
@@ -21,10 +21,10 @@
         "override_code_highlight_bg": "#F9FAFC",
         "sample_dark_background": "#333333",
         "show_project_name": true,
-        "show_version": true,
+        "show_version": false,
         "max_width": null,
         "titles": {
-            "library_title": "Pattern Library",
+            "library_title": null,
             "pages_title": "Overview",
             "components_title": "Components"
         }

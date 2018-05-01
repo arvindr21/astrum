@@ -8,7 +8,7 @@ var Command = require('commander').Command,
 
 program
     .usage('[path]')
-    .description(chalk.yellow('Initilize a new pattern library.'));
+    .description(chalk.yellow('Initilize a new component library.'));
 
 /**
  * Override argv[1] so that usage command is
@@ -39,7 +39,7 @@ if(path) {
         console.log();
         console.log(chalk.yellow('To get started add your first component using:'));
         console.log();
-        console.log(chalk.yellow('$ astrum new [group_name/component_name]'));
+        console.log(chalk.yellow('$ cf new [group_name/component_name]'));
         console.log();
         console.log(chalk.yellow('To customise your pattern library locate your data.json file'));
         console.log(chalk.yellow('in ' + path + ' and add your project details.'));

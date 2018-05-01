@@ -16,7 +16,7 @@ program
  * Override argv[1] so that usage command is
  * formatted correctly.
  */
-process.argv[1] = 'astrum edit';
+process.argv[1] = 'cf edit';
 
 program.parse(process.argv);
 

@@ -1,0 +1,20 @@
+{
+  "name": "copper-framework",
+  "version": "0.1.0",
+  "description": "Component development Framework",
+  "main": "copper-framework/index.html",
+  "scripts": {
+    "start": "live-server ./src --port=5000"
+  },
+  "keywords": [
+    "web-component",
+    "Components",
+    "Framework",
+    "copper-framework"
+  ],
+  "author": "Arvind Ravulavaru",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.0"
+  }
+}

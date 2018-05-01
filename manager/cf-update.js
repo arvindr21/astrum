@@ -11,13 +11,13 @@ utils.init();
 program
     .usage('[path]')
     .description(chalk.yellow('Update an existing pattern library.'))
-    .option('-f, --force', 'Force update the Astrum instance. ');
+    .option('-f, --force', 'Force update the copper-framework instance. ');
 
 /**
  * Override argv[1] so that usage command is
  * formatted correctly.
  */
-process.argv[1] = 'astrum update';
+process.argv[1] = 'cf update';
 
 program.parse(process.argv);
 

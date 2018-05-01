@@ -1,10 +1,10 @@
-# Contributing to Astrum
+# Contributing to copper-framework
 
-Our aim is to make Astrum as versatile as possible and if you’d like to contribute to the project please take a moment to review this document.
+Our aim is to make copper-framework as versatile as possible and if you’d like to contribute to the project please take a moment to review this document.
 
 ## Using the issue tracker
 
-The [issue tracker](https://github.com/nodivide/astrum/issues) is our preferred channel for [bug reports](#bugs), [features requests](#features) and submitting [pull requests](#pull-requests).
+The [issue tracker](https://github.com/arvindr21/copper-framework/issues) is our preferred channel for [bug reports](#bugs), [features requests](#features) and submitting [pull requests](#pull-requests).
 
 <a name="bugs"></a>
 ## Bug reports
@@ -13,7 +13,7 @@ The [issue tracker](https://github.com/nodivide/astrum/issues) is our preferred 
 
 A bug is a reproducible issue that is caused by the code in the repository. 
 
-*Note: Astrum applies your projects CSS and JavaScript to render component examples, please ensure that any suspected “bugs” aren’t being caused by an adverse issue in your own project code*.
+*Note: copper-framework applies your projects CSS and JavaScript to render component examples, please ensure that any suspected “bugs” aren’t being caused by an adverse issue in your own project code*.
 
 Guidelines for bug reports:
 
@@ -30,18 +30,18 @@ Please try to be as detailed as possible in your report, in particular what step
 
 *When creating a feature request please apply the green “feature request” label.*
 
-We’re open to ideas and will consider any strong case for additional features to incorporate into Astrum. Please consider the wider user base when making a feature request. Will this the new feature benefit everyone?
+We’re open to ideas and will consider any strong case for additional features to incorporate into copper-framework. Please consider the wider user base when making a feature request. Will this the new feature benefit everyone?
 
 Example use cases and scenarios for why the new feature is being requested are always helpful. 
 
-Thanks for taking the time and endeavouring to help make Astrum better.
+Thanks for taking the time and endeavouring to help make copper-framework better.
 
 <a name="pull-requests"></a>
 ## Pull requests
 
 Pull requests are a great help. Please ensure they remain focused in scope and commit messages conform to these [git message guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
-**Please ask first** before developing any new features, otherwise you risk spending a lot of time working on something that we might not want to merge into Astrum.
+**Please ask first** before developing any new features, otherwise you risk spending a lot of time working on something that we might not want to merge into copper-framework.
 
 The following process is the best way to get your work included:
 
@@ -49,22 +49,22 @@ The following process is the best way to get your work included:
 
 	```bash
 	# Clone your fork of the repo into the current directory
-	$ git clone https://github.com/<your-username>/astrum.git
+	$ git clone https://github.com/<your-username>/copper-framework.git
 	```
 			   
 	```bash		
 	# Navigate to the newly cloned directory
-	$ cd astrum
+	$ cd copper-framework
 	```
 			
 	```bash  
 	# Assign the original repo to a remote called "upstream"
-	$ git remote add upstream https://github.com/nodivide/astrum.git
+	$ git remote add upstream https://github.com/arvindr21/copper-framework.git
 	```
 	   
 	```bash	   
 	# Create a globally-installed symbolic link to your local              
-	# development copy of Astrum
+	# development copy of copper-framework
 	$ npm link
 	```
    
