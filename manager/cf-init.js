@@ -12,7 +12,7 @@ var NPMI = require('spawn-npm-install');
 
 program
     // .usage('[path]')
-    .description(chalk.yellow('Initilize a new component library.'));
+    .description(chalk.yellow('Initialize a new component library.'));
 
 /**
  * Override argv[1] so that usage command is
@@ -37,9 +37,16 @@ if (!process.argv.slice(1).length) {
 var path = `.${path.sep}`;
 if (path) {
     utils.setup(path, function() {
+
         console.log();
         console.log(chalk.grey('----------------------------------------------------------------'));
-        console.log(chalk.green('\u2713 Installing dependencies. Please wait.'));
+        console.log(chalk.green('\u2713 Initializing project...'));
+        console.log(chalk.grey('----------------------------------------------------------------'));
+        console.log();
+
+        console.log();
+        console.log(chalk.grey('----------------------------------------------------------------'));
+        console.log(chalk.green('\u2713 Installing dependencies. Please wait...'));
         console.log(chalk.grey('----------------------------------------------------------------'));
         console.log();
 

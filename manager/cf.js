@@ -9,8 +9,8 @@ var program = require('commander'),
 program
     .version(pjson.version)
     .usage('[command]')
-    .command('init', 'initialize new pattern library')
-    .command('update', 'update existing pattern library')
+    .command('init', 'initialize new component library')
+    .command('update', 'update existing component library')
     .command('new', 'create a new component')
     .command('edit', 'edit a component and/or group')
     .command('delete', 'delete component and/or group')

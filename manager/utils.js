@@ -259,46 +259,71 @@ module.exports = {
         return !error;
     },
 
-    createComponentFolder: function(component_path, callback) {
+    createComponentFolder: function(component_path, component_name, group_name, compType, callback) {
         callback = typeof callback !== 'undefined' ? callback : function() {};
 
         var _this = this,
             error = false;
-
-        fs.mkdir(_this.pathify(component_path), function(err) {
-            if (err) {
-                console.log(chalk.red('Error: ' + err));
-                error = true;
-                return;
-            }
-
-            fs.writeFile(_this.pathify(component_path + '/markup.html'), '', function(err) {
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', compType);
+        if (compType === 'static') {
+            fs.mkdir(_this.pathify(component_path), function(err) {
                 if (err) {
                     console.log(chalk.red('Error: ' + err));
                     error = true;
                     return;
                 }
 
-                fs.writeFile(_this.pathify(component_path + '/description.md'), '', function(err) {
+                fs.writeFile(_this.pathify(component_path + '/markup.html'), '', function(err) {
                     if (err) {
                         console.log(chalk.red('Error: ' + err));
                         error = true;
                         return;
                     }
 
-                    // fs.writeFile(_this.pathify(component_path + '/app.ts'), '', function(err) {
-                    //     if (err) {
-                    //         console.log(chalk.red('Error: ' + err));
-                    //         error = true;
-                    //         return;
-                    //     }
+                    fs.writeFile(_this.pathify(component_path + '/description.md'), '', function(err) {
+                        if (err) {
+                            console.log(chalk.red('Error: ' + err));
+                            error = true;
+                            return;
+                        }
 
-                    //     return callback();
-                    // });
-                    return callback();
+                        return callback();
+                    });
                 });
             });
-        });
+        } else {
+            var compNameRecog = new RegExp('<% COMP-NAME %>', 'g');
+            var grupNameRecog = new RegExp('<% GRUP-NAME %>', 'g');
+            var classNameRecog = new RegExp('<% COMP-CLAS-NAME %>', 'g');
+
+            fs.mkdir(_this.pathify(component_path), function(err) {
+                if (err) {
+                    console.log(chalk.red('Error: ' + err));
+                    error = true;
+                    return;
+                }
+
+                const files = [
+                    'component.html',
+                    'description.md',
+                    'markup.html'
+                ]
+
+                for (var i = files.length - 1; i >= 0; i--) {
+                    let f = files[i];
+                    const className = _this.snakeToCamel(component_name);
+                    var content = fs.readFileSync(_this.module_path + '/_webcomponent/' + f, 'utf-8');
+                    content = content.replace(compNameRecog, component_name);
+                    content = content.replace(grupNameRecog, group_name);
+                    content = content.replace(classNameRecog, className);
+
+                    if (i === 0) f = component_name + '.html';
+                    fs.writeFileSync(_this.pathify(component_path + '/' + f), content);
+                }
+            });
+
+            return callback();
+        }
 
         return !error;
     },
@@ -311,10 +336,10 @@ module.exports = {
 
         fs.exists(_this.pathify(group_path), function(r) {
             if (r) {
-                _this.createComponentFolder(component_path);
+                _this.createComponentFolder(component_path, component.name, component.group, component.compType);
             } else {
                 _this.createGroupFolder(group_path, function() {
-                    _this.createComponentFolder(component_path);
+                    _this.createComponentFolder(component_path, component.name, component.group, component.compType);
                 });
             }
         });
@@ -617,5 +642,11 @@ module.exports = {
         }
 
         return path;
+    },
+    snakeToCamel: function(s) {
+        s = s.charAt(0).toUpperCase() + s.slice(1)
+        return s.replace(/(\-\w)/g, function(m) {
+            return m[1].toUpperCase();
+        });
     }
 };

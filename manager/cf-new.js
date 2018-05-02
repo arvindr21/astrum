@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var Command = require('commander').Command,
     program = require('commander'),
     fs = require('fs-extra'),
@@ -45,10 +46,9 @@ if (group_name) {
         newComponent.name = parts[1];
 
         // Prompt for additional component details
-        inquirer.prompt([
-            {
+        inquirer.prompt([{
                 name: 'title',
-                message: function () {
+                message: function() {
                     console.log();
                     console.log(chalk.grey('New component details:'));
                     console.log(chalk.grey('----------------------------------------------------------------'));
@@ -56,21 +56,39 @@ if (group_name) {
                     console.log(chalk.grey('Component name: ' + parts[1]));
                     return 'Component title:'
                 },
-                validate: function (str) {
+                validate: function(str) {
                     return str !== '';
                 }
             },
             {
-                when: function () {
+                when: function() {
+                    return !program.type || program.type !== 'colors';
+                },
+                type: 'list',
+                name: 'compType',
+                message: function() {
+                    return 'Component Type:'
+                },
+                choices: [{
+                        name: 'Static Component (Pure HTML & CSS)',
+                        value: 'static'
+                    },
+                    {
+                        name: 'Dynamic Web Component (HTML5 Web Component)',
+                        value: 'dynamic'
+                    }
+                ]
+            },
+            {
+                when: function() {
                     return !program.type || program.type !== 'colors';
                 },
                 type: 'list',
                 name: 'width',
-                message: function () {
+                message: function() {
                     return 'Component width:'
                 },
-                choices: [
-                    {
+                choices: [{
                         name: 'Full width',
                         value: 'full'
                     },
@@ -81,12 +99,12 @@ if (group_name) {
                 ]
             },
             {
-                when: function () {
+                when: function() {
                     return !program.type || program.type !== 'colors';
                 },
                 type: 'confirm',
                 name: 'sample_dark_background',
-                message: function () {
+                message: function() {
                     console.log();
                     console.log(chalk.grey('Component options:'));
                     console.log(chalk.grey('----------------------------------------------------------------'));
@@ -95,29 +113,30 @@ if (group_name) {
                 default: false
             },
             {
-                when: function () {
+                when: function() {
                     return !program.type || program.type !== 'colors';
                 },
                 type: 'confirm',
                 name: 'disable_code_sample',
-                message: function () {
+                message: function() {
                     return 'Disable code sample?'
                 },
                 default: false
             }
-        ]).then(function (answers) {
+        ]).then(function(answers) {
             var typeColor = program.type && program.type == 'colors';
 
             newComponent.title = answers.title;
+            newComponent.compType = answers.compType;
             if (answers.width != 'full') newComponent.width = answers.width;
 
             if (answers.sample_dark_background) {
-                if(!newComponent.hasOwnProperty('options')) { newComponent.options = {} };
+                if (!newComponent.hasOwnProperty('options')) { newComponent.options = {} };
                 newComponent.options.sample_dark_background = answers.sample_dark_background;
             }
 
             if (answers.disable_code_sample) {
-                if(!newComponent.hasOwnProperty('options')) { newComponent.options = {} };
+                if (!newComponent.hasOwnProperty('options')) { newComponent.options = {} };
                 newComponent.options.disable_code_sample = answers.disable_code_sample;
             }
 
@@ -130,17 +149,16 @@ if (group_name) {
             if (!utils.groupExists(group_name)) {
                 var newGroup = {};
 
-                inquirer.prompt([
-                    {
+                inquirer.prompt([{
                         name: 'title',
-                        message: function () {
+                        message: function() {
                             console.log();
                             console.log(chalk.grey('New group details:'));
                             console.log(chalk.grey('----------------------------------------------------------------'));
                             console.log(chalk.grey('Group name: ' + parts[0]));
                             return 'Group title:';
                         },
-                        validate: function (str) {
+                        validate: function(str) {
                             return str !== '';
                         }
                     },
@@ -150,15 +168,16 @@ if (group_name) {
                         message: 'Select group position:',
                         choices: utils.getGroupPositionChoices()
                     }
-                ]).then(function (answers) {
+                ]).then(function(answers) {
                     newGroup.name = parts[0];
                     newGroup.title = answers.title;
 
                     utils.$data.groups.splice(answers.group_position, 0, newGroup);
                     utils.$data.groups[answers.group_position].components = [newComponent];
 
+
                     if (utils.createComponentFiles(newComponent)) {
-                        utils.saveData(function () {
+                        utils.saveData(function() {
                             console.log();
                             console.log(chalk.grey('----------------------------------------------------------------'));
                             console.log(chalk.green('\u2713 Pattern library data saved successfully.'));
@@ -204,21 +223,19 @@ if (group_name) {
                 // Else prompt to position new component in group
             } else {
 
-                inquirer.prompt([
-                    {
-                        type: 'list',
-                        name: 'component_position',
-                        message: 'Select component position in the "' + newComponent.group + '" group:',
-                        choices: utils.getComponentPositionChoices(newComponent.group),
-                        default: utils.getComponentPositionChoices(newComponent.group).length - 1
-                    }
-                ]).then(function (answers) {
+                inquirer.prompt([{
+                    type: 'list',
+                    name: 'component_position',
+                    message: 'Select component position in the "' + newComponent.group + '" group:',
+                    choices: utils.getComponentPositionChoices(newComponent.group),
+                    default: utils.getComponentPositionChoices(newComponent.group).length - 1
+                }]).then(function(answers) {
                     var groupIndex = utils.getGroupIndex(newComponent.group);
 
                     utils.$data.groups[groupIndex].components.splice(answers.component_position, 0, newComponent);
 
                     if (utils.createComponentFiles(newComponent)) {
-                        utils.saveData(function () {
+                        utils.saveData(function() {
                             console.log();
                             console.log(chalk.grey('----------------------------------------------------------------'));
                             console.log(chalk.green('\u2713 Pattern library data saved successfully.'));
@@ -253,6 +270,8 @@ if (group_name) {
                             } else {
                                 console.log();
                                 console.log(chalk.yellow('Add your component markup to ' + utils.$config.path + '/components/' + newComponent.group + '/' + newComponent.name + '/markup.html'));
+                                if (newComponent.compType === 'dynamic')
+                                    console.log(chalk.yellow('Add your web component to ' + utils.$config.path + '/components/' + newComponent.group + '/' + newComponent.name + '/' + newComponent.name + '.html'));
                                 console.log(chalk.yellow('Add your component description to ' + utils.$config.path + '/components/' + newComponent.group + '/' + newComponent.name + '/description.md (Markdown supported)'));
                                 console.log();
                             }
