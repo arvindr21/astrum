@@ -1,1 +1,0 @@
-An example terminal window using the `.mono` object.

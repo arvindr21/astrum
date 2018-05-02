@@ -1,1 +1,0 @@
-The primary button style uses the `.btn--primary` modifier class.

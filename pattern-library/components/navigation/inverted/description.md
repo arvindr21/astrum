@@ -1,1 +1,0 @@
-The inverted navigation object uses the `.nav--inverted` modifier class.

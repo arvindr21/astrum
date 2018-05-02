@@ -1,1 +1,0 @@
-A collection core elements that make up the Astrum brand.

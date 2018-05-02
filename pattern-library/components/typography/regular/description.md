@@ -1,1 +1,0 @@
-Utilises the mixin @include font-stack(regular, sans-serif);. The helper class for this weight is .regular.

@@ -1,340 +1,311 @@
 <!DOCTYPE html>
-<!--[if lt IE 8 ]><html class="no-js lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8 ]><html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en" class="ndpl-c-background">
     <head>
-
-        <meta charset="utf-8" />
-
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
-        <meta name="format-detection" content="telephone=no" />
 
-        <title>Astrum - A lightweight pattern library for any project</title>
-      	<meta name="description" content="Include in your web projects with a single-command, manage components and groups easily and provide well documented pattern libraries for your clients and colleagues." />
+        <title v-text="project_name ? project_name + ' | Component Library' : 'Component Library'"></title>
 
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:site" content="@getastrum">
-        <meta name="twitter:creator" content="@nodivide">
-        <meta name="twitter:title" content="Astrum - A lightweight pattern library for any project">
-        <meta name="twitter:description" content="Include in your web projects with a single-command, manage components and groups easily and provide well documented pattern libraries for your clients and colleagues.">
-        <meta name="twitter:image" content="http://nd-bin.imgix.net/astrum/astrum-share-image.jpg?q=50&amp;w=1596&amp;fit=max&amp;dpr=2">
+        <!-- Copper Framework (https://github.com/arvindr21/copper-framework) -->
+        <meta name="application-name" content="Copper Framework {{ version }}" />
 
-        <meta property="og:title" content="Astrum - A lightweight pattern library for any project" />
-        <meta property="og:description" content="Include in your web projects with a single-command, manage components and groups easily and provide well documented pattern libraries for your clients and colleagues." />
-        <meta property="og:type" content="product" />
-        <meta property="og:url" content="http://getastrum.com" />
-        <meta property="og:image" content="http://nd-bin.imgix.net/astrum/astrum-share-image.jpg?q=50&amp;w=1596&amp;fit=max&amp;dpr=2" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/png" :href="project_favicon" />
 
-
-        <link rel="stylesheet" href="/assets/css/dist/site/all.css">
-
+        <!-- Component Library Stylesheets: DO NOT CHANGE -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel='stylesheet' type='text/css'>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.2.0/webcomponents-lite.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
         <script>
-            document.documentElement.className = document.documentElement.className.replace("no-js","js");
+            WebFont.load({
+                google: {
+                    families: ['Open Sans']
+                }
+            });
         </script>
+        <style>
+            /* Targeted theme styles */
+            .ndpl-folding-cube .ndpl-cube:before { background-color: {{ theme.brand_color }} !important; }
+            .ndpl-component__sample--inverted    { background-color: {{ theme.sample_dark_background }} !important }
+            .ndpl-c-background                   { background-color: {{ theme.background_color }} !important; }
+            .ndpl-c-border                       { border-color: {{ theme.border_color }} !important; }
+            .ndpl-c-border-b                     { border-bottom-color: {{ theme.border_color }} !important; }
+            .ndpl-c-highlight                    { background-color: {{ theme.highlight_color }} !important; }
+            .ndpl-c-highlight-ca a.active,
+            .ndpl-c-highlight-ca a:hover         { background-color: {{ theme.highlight_color }} !important; }
+            .ndpl-c-brand-c                      { color: {{ theme.brand_color }} !important; }
+            .ndpl-c-brand-bg                     { background-color: {{ theme.brand_color }} !important; }
+            .ndpl-c-brand-b                      { border-color: {{ theme.brand_color }} !important; }
+            .ndpl-c-brand-bl-ca a.active,
+            .ndpl-c-brand-bl-ca a:hover          { border-left-color: {{ theme.brand_color }} !important; }
+            .ndpl-c-brand-a:hover                { color: {{ theme.brand_color }} !important; }
+            .ndpl-c-brand-ca a:hover             { color: {{ theme.brand_color }} !important; }
+            .ndpl-c-brand-cai a                  { color: {{ theme.brand_color }} !important; }
+        </style>
+        <link rel="stylesheet" v-if="theme.code_highlight_theme" :href="'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/' + theme.code_highlight_theme + '.min.css'">
+        <style v-if="theme.override_code_highlight_bg">.hljs { background: {{ theme.override_code_highlight_bg }}} !important; }</style>
+        <link rel="stylesheet" href="app/css/styles.min.css">
 
-        <script src="https://use.typekit.net/prk5aou.js"></script>
-        <script>try{Typekit.load({ async: true });}catch(e){}</script>
+        <!-- Font Libraries -->
+        <link rel="stylesheet" v-if="font_libraries.google_web_fonts" :href="font_libraries.google_web_fonts">
+        <link rel="stylesheet" v-if="font_libraries.typography_web_fonts" :href="font_libraries.typography_web_fonts">
+        <ndpl-script :script="'https://use.typekit.net/' + font_libraries.typekit_code + '.js'" v-if="font_libraries.typekit_code" inline-template>
+            <script :src="script" @load="loadTypekit"></script>
+        </ndpl-script>
 
-        <link rel="shortcut icon" type="image/png" href="/assets/favicon.png" />
+        <!-- Custom stylesheets are loaded from the assets.css array in data.json -->
+        <link rel="stylesheet" v-for="css in assets.css" :href="css">
     </head>
-    <body data-app="homepage">
+    <body id="top"
+          class="ndpl-body ndpl-c-background"
+          :class="{ 'ndpl-inverted': theme.invert_text, 'ndpl-desktop': !mobile_view, 'ndpl-mobile': mobile_view, 'ndpl-disable-scrolling': sidebar_scrolling }">
 
-        <div class="site-container">
+    <div class="ndpl-loading" :class="{ 'in-progress': ! loaded }">
+        <div class="ndpl-folding-cube" v-if="!log.error.length && !log.info.length">
+            <div class="ndpl-cube1 ndpl-cube"></div>
+            <div class="ndpl-cube2 ndpl-cube"></div>
+            <div class="ndpl-cube4 ndpl-cube"></div>
+            <div class="ndpl-cube3 ndpl-cube"></div>
+        </div>
 
-            <header class="site-header">
+        <h3 class="ndpl-loading__title" v-if="! loaded && !log.error.length && !log.info.length">Building Component library...</h3>
+        <h3 class="ndpl-loading__title" v-if="log.error.length">Hold up! We have some errors...</h3>
+        <h3 class="ndpl-loading__title" v-if="log.info.length && !log.error.length">Looks like you have some setup to do...</h3>
 
-                <nav class="nav nav--primary nav--inverted" v-sticky="nav--fixed" anchor=".site-header" id="primary-nav">
-                    <div class="logo  logo--small">Astrum</div>
+        <ul class="ndpl-error" v-if="log.error.length">
+            <li class="ndpl-error__item" v-for="error in log.error">{{{ error }}}</li>
+        </ul>
+        <ul class="ndpl-info" v-if="log.info.length && !log.error.length">
+            <li class="ndpl-info__item" v-for="info in log.info">{{{ info }}}</li>
+        </ul>
+    </div>
 
-                    <a href="#" class="nav__toggle" v-toggle="primary-nav"><span class="icon icon--menu"></span>Menu</a>
+    <div class="ndpl-container"
+         :class="{ 'loaded': loaded }">
 
-                    <ul class="nav__items">
-                        <li class="nav__item"><a class="nav__link" href="#what-is-it">What is it?</a></li>
-                        <li class="nav__item"><a class="nav__link" href="https://github.com/NoDivide/astrum" target="_blank">Documentation</a></li>
-                        <li class="nav__item"><a class="nav__link" href="https://github.com/NoDivide/astrum/projects/2" target="_blank">Development Roadmap</a></li>
-                        <li class="nav__item"><a class="nav__link" href="https://www.npmjs.com/package/astrum" target="_blank">View NPM package</a></li>
-                        <li class="nav__item"><a class="nav__link" href="https://github.com/NoDivide/astrum" target="_blank">View on GitHub</a></li>
-                        <li class="nav__item"><a class="nav__link" href="https://github.com/NoDivide/astrum/issues" target="_blank">Help & Support</a></li>
-                    </ul>
-                </nav>
+        <header class="ndpl-header">
 
-                <section class="intro">
-                    <h2 class="intro__title logo logo--large logo--inverted logo--flare">Astrum</h2>
-                    <div class="intro__body">
-                        <p>A lightweight pattern library for any web project</p>
-                    </div>
-                    <div class="intro__actions">
-                        <a class="btn btn--inverted btn--icon" v-show-modal="video"><span class="icon icon--play"></span> Watch an Introduction</a>
-                        <a href="https://github.com/NoDivide/astrum#getting-started" class="btn btn--primary" target="_blank">Install Astrum<span v-if="version" v-text="' v' + version"></span></a>
-                    </div>
-                </section>
+            <img class="ndpl-header__logo"
+                 :src="project_logo"
+                 :alt="project_name"
+                 v-if="project_logo"/>
+
+            <h1 class="ndpl-header__title ndpl-c-brand-ca">
+                <span v-if="theme.show_project_name">{{{ project }}}</span>
+                <small v-if="theme.titles.library_title"
+                       v-text="theme.titles.library_title"></small>
+            </h1>
+
+            <div class="ndpl-nav-handle"
+                 :class="{ 'open': open_nav }"
+                 @click="toggleNav">
+                <div class="ndpl-nav-handle__container">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="ndpl-sidebar"
+             :class="{ 'open': open_nav }">
+
+            <header class="ndpl-sidebar__header">
+
+                <img class="ndpl-sidebar__logo"
+                     :src="project_logo"
+                     :alt="project_name"
+                     v-if="project_logo"/>
+
+                <h1 class="ndpl-sidebar__title ndpl-c-brand-ca">
+                    <span v-if="theme.show_project_name">{{{ project }}}</span>
+                    <small v-if="theme.titles.library_title"
+                           v-text="theme.titles.library_title"></small>
+                </h1>
 
             </header>
 
+            <nav class="ndpl-nav">
+               
 
-            <section class="section  section--text-block" id="what-is-it">
+                <h2 class="ndpl-nav__title">
+                    <a class="ndpl-nsc"
+                       href="#top"
+                       @click.prevent="scrollToHref"
+                       v-if="theme.titles.components_title"
+                       v-text="theme.titles.components_title"></a>
+                </h2>
 
-                <h2 class="section__title">What is it?</h2>
+                <ul class="ndpl-nav__items ndpl-c-border">
+                    <li class="ndpl-nav__item"
+                        v-for="group in groups"
+                        :class="{ 'active': active_components.length > 0 && group.id == active_components[0].group_id || group.id == open_group }">
 
-                <div class="section__body">
-                    <p>Astrum is a lightweight pattern library designed to be included with any web project.</p>
-                    <p>It's non-opinionated and doesn't expect you to write your markup or code in any particular way.</p>
-                    <p>An Astrum pattern library comprises of components organised into groups. A component comprises of a rendered sample of a particular element along with a code sample and a (optional) description for the components usage. A group can also have an (optional) description and is used for organisational purposes. You also have the option to add pages of content, for example an introduction page and/or coding guidelines specific to your project.</p>
-                    <p>
-                        <a href="/pattern-library/" class="btn  btn--reveal" target="_blank">View a demo <span class="icon icon--arrow"></span></a>
-                    </p>
-                </div>
+                        <a :href="'#' + group.id"
+                           class="ndpl-nav__group ndpl-nsc ndpl-c-border-b"
+                           v-text="group.title"
+                           @click.prevent="toggleOpenGroups(group)">
+                        </a>
 
-            </section>
+                        <ul class="ndpl-nav__child-items ndpl-c-highlight"
+                            v-if="group.components.length">
 
-
-            <div class="divider">
-                <img src="/assets/images/site/divider.png" alt="page divider" class="divider__image">
-            </div>
-
-
-            <section class="section  section--centered  section--tabs">
-                <div class="section__row">
-                    <h2 class="section__title">Why use Astrum?</h2>
-
-                    <div class="section__body">
-
-                        <nav class="nav nav--tabs">
-                            <ul class="nav__items">
-                                <li class="nav__item  tab  tab--one  active">
-                                    <a href="#tab-theme" class="nav__link" v-show-tab="theme" container="browser-tabs">
-                                        <div class="tab__icon">
-                                            <span class="icon icon--theme"></span>
-                                        </div>
-                                        <h3 class="tab__title">Theme to match your brand</h3>
-                                        <p class="tab__body">
-                                            Astrum includes simple customisation so that you may theme your pattern libraries to compliment their companion projects.
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav__item  tab  tab--two">
-                                    <a href="#tab-responsive" class="nav__link" v-show-tab="responsive" container="browser-tabs">
-                                        <div class="tab__icon">
-                                            <span class="icon icon--responsive"></span>
-                                        </div>
-                                        <h3 class="tab__title">Responsive with intelligent messaging</h3>
-                                        <p class="tab__body">
-                                            Astrum is fully responsive and has the facility to detect when one of your components is hidden at different resolutions, presenting a meaningful message.
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav__item  tab  tab--three">
-                                    <a href="#tab-feedback" class="nav__link" v-show-tab="feedback" container="browser-tabs">
-                                        <div class="tab__icon">
-                                            <span class="icon icon--helpers"></span>
-                                        </div>
-                                        <h3 class="tab__title">Guided feedback</h3>
-                                        <p class="tab__body">
-                                            Astrum provides helpful feedback as you go. Add a new component and it tells you where you need to go next.
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-
-                        <div class="screenshots" id="browser-tabs">
-                            <div id="tab-theme" class="tab-pane active">
-                                <img src="http://nd-bin.imgix.net/astrum/theme.jpg?q=75" alt=" "/>
-                            </div>
-                            <div id="tab-responsive" class="tab-pane">
-                                <img src="http://nd-bin.imgix.net/astrum/responsive.jpg?q=75" alt=" "/>
-                            </div>
-                            <div id="tab-feedback" class="tab-pane">
-                                <img src="http://nd-bin.imgix.net/astrum/guided-feedback.jpg?q=75" alt=" "/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-            <section class="section  section--centered  section--highlighted  section--terminal">
-                <div class="section__row">
-                    <header class="section__header">
-                        <div class="section__icon">
-                            <span class="icon  icon--command"></span>
-                        </div>
-                        <h2 class="section__title">Intuitive management from the command-line.</h2>
-                        <p>
-                            Astrum comes bundled with a command-line tool that allows you to easily manage components and groups through intuitive feedbank and prompts.
-                        </p>
-                    </header>
-
-                    <div class="section__body">
-
-                        <nav class="nav nav--tabs">
-                            <ul class="nav__items">
-                                <li class="nav__item tab  tab--small active">
-                                    <a href="#tab-install" class="nav__link" v-show-tab="install" container="terminal-tabs">
-                                        <div class="tab__icon">.01</div>
-                                        <h3 class="tab__title">Single-command install</h3>
-                                    </a>
-                                </li>
-
-                                <li class="nav__item  tab  tab--small">
-                                    <a href="#tab-manage" class="nav__link" v-show-tab="manage" container="terminal-tabs">
-                                        <div class="tab__icon">.02</div>
-                                        <h3 class="tab__title">Manage components</h3>
-                                    </a>
-                                </li>
-
-                                <li class="nav__item  tab  tab--small">
-                                    <a href="#tab-update" class="nav__link" v-show-tab="update" container="terminal-tabs">
-                                        <div class="tab__icon">.03</div>
-                                        <h3 class="tab__title">Keep up-to-date</h3>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-
-                        <div class="terminal" id="terminal-tabs">
-                            <div class="terminal__header">
-                                <div class="terminal__button"></div>
-                                <div class="terminal__button"></div>
-                                <div class="terminal__button"></div>
-                            </div>
-                            <div class="terminal__body">
-                                <div id="tab-install" class="tab-pane active">
-                                    <span class="mono">$ npm install -g astrum</span>
-                                    <span class="mono">$ cd project-folder</span>
-                                    <span class="mono">$ astrum init ./public/library</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono mono--green">&#10003; Pattern library initialized successfully.</span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--no-wrap mono--yellow">To get started add your first component using:</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--no-wrap mono--yellow">$ astrum new [group_name/component_name]</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--limit mono--yellow">To customise your pattern library locate your data.json file in ./public/library/ and add your project details.</span>
-                                    <span class="mono"></span>
-                                </div>
-                                <div id="tab-manage" class="tab-pane">
-                                    <span class="mono">$ astrum new btns/default</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono chalk-grey">New component details:</span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono mono--grey">Component group: btns</span>
-                                    <span class="mono mono--grey">Component name: default</span>
-                                    <span class="mono">? Component title: <span class="mono mono--inline mono--blue">Default</span></span>
-                                    <span class="mono">? Component width: <span class="mono mono--inline mono--blue">Full width</span></span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--grey">Component options:</span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono">? Apply a dark background to the code sample? <span class="mono mono--inline mono--blue">No</span></span>
-                                    <span class="mono">? Select component position in the "btns" group: <span class="mono mono--inline mono--blue">Position first</span></span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono mono--green">&#10003; Pattern library data saved successfully.</span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--yellow">Add your component markup to ./library/components/btns/default/markup.html</span>
-                                    <span class="mono mono--yellow">Add your component description to ./library/components/btns/default/description.md</span>
-                                    <span class="mono"> </span>
-                                </div>
-                                <div id="tab-update" class="tab-pane">
-                                    <span class="mono">$ astrum update</span>
-                                    <span class="mono"> </span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono mono--green">&#10003; Pattern library successfully updated from 1.4.5 to 1.5.2.</span>
-                                    <span class="mono mono--no-wrap mono--grey">----------------------------------------------------------------</span>
-                                    <span class="mono"> </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-            <section class="section  section--split">
-
-                <div class="section__col">
-                    <div class="section__body">
-                        <span class="icon icon--documentation"></span>
-                        <h2 class="section__title">Documentation</h2>
-                        <p>
-                            We’ve created full documentation for Astrum, which is updated and stored on GitHub.
-                        </p>
-                        <a href="https://github.com/NoDivide/astrum" class="btn  btn--inverted  btn--reveal" target="_blank">View on GitHub <span class="icon icon--arrow"></span></a>
-                    </div>
-                </div>
-
-                <div class="section__col">
-                    <div class="section__body">
-                        <span class="icon icon--help"></span>
-                        <h2 class="section__title">Help & Support</h2>
-                        <p>
-                            We welcome anyone and everyone to contribute to the project and help us make Astrum as versatile as possible. We’ve created guidelines for submitting bug and feature requests on GitHub.
-                        </p>
-                        <a href="https://github.com/NoDivide/astrum" class="btn  btn--inverted  btn--reveal" target="_blank">View on GitHub <span class="icon icon--arrow"></span></a>
-                        <a href="https://github.com/NoDivide/astrum/projects/2" class="btn  btn--inverted  btn--primary" target="_blank">Development Roadmap</a>
-                    </div>
-                </div>
-
-            </section>
-
-
-            <footer class="site-footer">
-                <div class="section__row">
-
-                    <div class="site-footer__legal">
-                        <p>&copy; Copyright 2015 - 2016 No Divide Studio Ltd</p>
-                    </div>
-
-                    <nav class="nav nav--footer  site-footer__nav">
-                        <ul class="nav__items">
-                            <li class="nav__item">
-                                <a href="http://nodividestudio.com/our-work" target="_blank" class="nav__link">Our Work</a>
-                            </li>
-                            <li class="nav__item">
-                                <a href="http://nodividestudio.com/what-we-do" target="_blank" class="nav__link">What We Do</a>
-                            </li>
-                            <li class="nav__item">
-                                <a href="http://nodividestudio.com/who-we-are" target="_blank" class="nav__link">Who We Are</a>
-                            </li>
-                            <li class="nav__item">
-                                <a href="http://nodividestudio.com/our-journal" target="_blank" class="nav__link">Our Journal</a>
-                            </li>
-                            <li class="nav__item">
-                                <a href="http://nodividestudio.com/get-in-touch" target="_blank" class="nav__link">Get in Touch</a>
+                            <li class="ndpl-nav__child-item ndpl-c-border-b ndpl-c-brand-bl-ca"
+                                v-for="component in group.components">
+                                <a :href="'#' + component.id"
+                                   class="ndpl-nav__component ndpl-nsc"
+                                   :class="{ 'active': active_components.indexOf(component) >= 0 }"
+                                   v-text="component.title"
+                                   @click.prevent="scrollToHref">
+                                </a>
                             </li>
                         </ul>
-                    </nav>
+                    </li>
+                </ul>
 
-                    <div class="site-footer__logo">
-                        <a href="http://nodividestudio.com" target="_blank" class="logo logo--no-divide"></a>
-                    </div>
-                </div>
-            </footer>
+                 <template v-if="content">
+                    <h2 class="ndpl-nav__title"
+                        v-if="theme.titles.pages_title"
+                        v-text="theme.titles.pages_title"></h2>
 
+                    <ul class="ndpl-nav__items ndpl-c-border ndpl-c-highlight-ca ndpl-c-brand-bl-ca">
+                        <li class="ndpl-nav__item" v-for="page in content.pages">
+                            <a class="ndpl-nav__page ndpl-nsc ndpl-c-border-b"
+                               :class="{ 'active': active_page && active_page.title === page.title }"
+                               v-text="page.title"
+                               @click.prevent="loadPage(page)">
+                            </a>
+                        </li>
+                    </ul>
+                </template>
+
+            </nav>
+
+            <div class="ndpl-copyright ndpl-c-brand-ca">
+
+                <p v-if="copyright_start_year && client || all_creators">
+                    <template v-if="copyright_start_year && client">
+                        &copy; {{ copyright_year }} {{{ client }}}.
+                    </template>
+                    <template v-if="all_creators">
+                        <br/>Component library created by {{{ all_creators }}}.
+                    </template>
+                </p>
+
+                <p v-if="theme.show_version">Copper Framework v{{ version }}</p>
+
+            </div>
         </div>
 
+        <div class="ndpl-content" data-app="cf">
+            <div class="ndpl-page ndpl-c-brand-cai" :style="library_inline_styles" v-if="active_page">{{{ active_page.markup }}}</div>
+            <div class="ndpl-library" :style="library_inline_styles" :class="{ 'ndpl-preloaded': active_page }">
 
-        <astrum-modal identifier="video">
-            <div class="modal__content">
-                <iframe src="https://player.vimeo.com/video/172391925" width="100%" height="540" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                <ndpl-group v-for="group in groups"
+                            :group="group"
+                            inline-template>
+
+                    <div class="ndpl-library__group"
+                         :id="group.id">
+
+                        <h2 class="ndpl-library__title">{{ group.title }}</h2>
+
+                        <div class="ndpl-group__description ndpl-c-brand-ca"
+                             v-html="group.description"
+                             v-if="group.description"></div>
+
+                        <div class="ndpl-components">
+                            <ndpl-component v-for="component in group.components"
+                                            :component="component"
+                                            inline-template>
+
+                                <div class="ndpl-component"
+                                     :id="component.id"
+                                     :group-id="component.group_id"
+                                     :class="'ndpl-component--' + component.width">
+
+                                    <h3 class="ndpl-component__title">{{ component.title }}</h3>
+
+                                    <div class="ndpl-component__description ndpl-c-brand-ca"
+                                         v-html="component.description"></div>
+
+                                    <template v-if="component.type == 'colors'">
+                                        <div v-if="component.colors.length" class="ndpl-component__colors ndpl-cf">
+
+                                            <div class="ndpl-component__color-container"
+                                                 v-for="color in component.colors">
+
+                                                <div class="ndpl-component__color"
+                                                     v-for="item in color.split(',')"
+                                                     :class="{ 'ndpl-apply-border ndpl-c-border': shouldApplyBorder(item), }"
+                                                     :style="'background-color:' + item">
+                                                    <div :class="{ 'ndpl-dark-text': shouldInvertText(item) }">{{ item }}</div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        <ul v-else class="ndpl-component__sample-missing ndpl-info">
+                                            <li class="ndpl-info__item">Locate this component in your <code>data.json</code> file and add your colors to the "colors" array that has been created for you e.g.:</li>
+                                            <li><pre class="ndpl-pre">"colors": ["#4c4c4c","#7d8284","#a6b1b5","#e6eaf2","#FFFFFF"]</pre></li>
+                                        </ul>
+                                    </template>
+                                    <template v-else>
+                                        <div class="ndpl-component__container"
+                                             v-show="isCodeVisible()">
+
+                                            <div class="ndpl-component__sample ndpl-c-border"
+                                                 :class="{
+                                                    'ndpl-component__sample--inverted': component.options.sample_dark_background,
+                                                    'ndpl-component__sample--disabled-code': component.options.disable_code_sample
+                                                 }"
+                                                 :style="inline_styles"
+                                                 v-if="component.html">
+                                                {{{ component.html }}}
+                                            </div>
+
+                                            <template v-if="component.html">
+                                                <div class="ndpl-component__code ndpl-c-border"
+                                                     v-show="component.code_show">
+                                                    <pre class="ndpl-pre"><code class="ndpl-code html" v-text="component.html"></code></pre>
+                                                </div>
+                                                <a v-if="!component.options.disable_code_sample"
+                                                   class="ndpl-component__code-toggle ndpl-c-highlight ndpl-c-border"
+                                                   @click.prevent="component.code_show = ! component.code_show"
+                                                   v-text="component.code_show ? 'Hide code sample' : 'Show code sample'"></a>
+                                            </template>
+                                            <ul v-else class="ndpl-component__sample-missing ndpl-info">
+                                                <li class="ndpl-info__item">Add your component markup to <code>/components/{{ component.group }}/{{ component.name }}/markup.html</code></li>
+                                            </ul>
+
+                                        </div>
+
+                                        <div class="ndpl-component__sample-hidden ndpl-info"
+                                             v-show="!isCodeVisible()">
+                                            This component is hidden at this resolution.
+                                        </div>
+                                    </template>
+                                </div>
+                            </ndpl-component>
+                        </div>
+                    </div>
+                </ndpl-group>
             </div>
-        </astrum-modal>
+        </div>
+    </div>
 
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    <ndpl-script v-for="script in assets.js"
+                 :script="script"
+                 v-if="loaded"
+                 inline-template>
+        <script :src="script"></script>
+    </ndpl-script>
 
-            ga('create', 'UA-55652975-2', 'auto');
-            ga('send', 'pageview');
-
-        </script>
-        <script src="/assets/js/dist/site/all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.8.0/vue-resource.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/10.0.0/js/smooth-scroll.min.js"></script>
+    <script src="app/js/main.min.js"></script>
     </body>
 </html>

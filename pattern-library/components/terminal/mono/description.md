@@ -1,1 +1,0 @@
-The `.mono` object is used for command-line text output.

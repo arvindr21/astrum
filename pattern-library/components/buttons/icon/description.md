@@ -1,1 +1,0 @@
-The icon button has a `.icon` object and uses the `.btn--icon` modifier.

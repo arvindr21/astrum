@@ -1,1 +1,0 @@
-The inverted logo used in the welcome header.
