@@ -85,9 +85,7 @@ or
 
 to launch the Copper Framework app on [localhost:5000](http://localhost:5000).
 
-You can spawn another terminal/prompt and scaffold components and the Copper Framework app refreshes. 
-
-Do keep an eye on the console of the Copper Framework app, this will throw errors if there are any inconsistencies.
+Do keep an eye on the (browser) console of the Copper Framework app, the app will throw errors if there are any inconsistencies while adding components & pages.
 
 <a href=“#how-cf-works”></a>
 ## How Copper Framework Works
