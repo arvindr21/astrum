@@ -45,22 +45,15 @@ if (group_name) {
         newComponent.group = parts[0];
         newComponent.name = parts[1];
 
+        if (newComponent.name.indexOf('-') <= 1) {
+            console.log();
+            console.log(chalk.red('Component name needs to be in kebab case. Ex: btn-primary'));
+            console.log();
+            return;
+        }
+
         // Prompt for additional component details
         inquirer.prompt([{
-                name: 'title',
-                message: function() {
-                    console.log();
-                    console.log(chalk.grey('New component details:'));
-                    console.log(chalk.grey('----------------------------------------------------------------'));
-                    console.log(chalk.grey('Component group: ' + parts[0]));
-                    console.log(chalk.grey('Component name: ' + parts[1]));
-                    return 'Component title:'
-                },
-                validate: function(str) {
-                    return str !== '';
-                }
-            },
-            {
                 when: function() {
                     return !program.type || program.type !== 'colors';
                 },
@@ -78,6 +71,19 @@ if (group_name) {
                         value: 'dynamic'
                     }
                 ]
+            }, {
+                name: 'title',
+                message: function() {
+                    console.log();
+                    console.log(chalk.grey('New component details:'));
+                    console.log(chalk.grey('----------------------------------------------------------------'));
+                    console.log(chalk.grey('Component group: ' + parts[0]));
+                    console.log(chalk.grey('Component name: ' + parts[1]));
+                    return 'Component title:'
+                },
+                validate: function(str) {
+                    return str !== '';
+                }
             },
             {
                 when: function() {
