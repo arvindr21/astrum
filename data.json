@@ -17,8 +17,8 @@
         "highlight_color": "#F9FAFC",
         "brand_color": "#00585C",
         "background_color": "#FFFFFF",
-        "code_highlight_theme": "github",
-        "override_code_highlight_bg": "#F9FAFC",
+        "code_highlight_theme": "monokai",
+        "override_code_highlight_bg": "#000",
         "sample_dark_background": "#333333",
         "show_project_name": true,
         "show_version": false,
@@ -52,6 +52,56 @@
         ]
     },
     "groups": [
+        {
+            "name": "layout",
+            "title": "Layout",
+            "components": [
+                {
+                    "group": "layout",
+                    "name": "content-container",
+                    "title": "Content Container",
+                    "compType": "static"
+                },
+                {
+                    "group": "layout",
+                    "name": "content-container-fluid",
+                    "title": "Container Fluid",
+                    "compType": "static"
+                }
+            ]
+        },
+        {
+            "name": "grid",
+            "title": "Grid System",
+            "components": [
+                {
+                    "group": "grid",
+                    "name": "row-col",
+                    "title": "Grid",
+                    "compType": "static"
+                }
+            ]
+        },
+        {
+            "name": "buttons",
+            "title": "Buttons",
+            "components": [
+                {
+                    "group": "buttons",
+                    "name": "btn-primary",
+                    "title": "Primary Button",
+                    "compType": "static",
+                    "width": "half"
+                },
+                {
+                    "group": "buttons",
+                    "name": "btn-secondary",
+                    "title": "Secondary Button",
+                    "compType": "static",
+                    "width": "half"
+                }
+            ]
+        },
         {
             "name": "alerts",
             "title": "Alerts",

@@ -1,3 +1,17 @@
+# Web Component Twitter Bootstrap component library
+
+This component library helps build an end to application using Twitter Bootstrap 4.x & Web Component Specifications. 
+
+## Getting Started
+
+In you web application, include the following CSS to get started
+
+```html
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+```
+
+You can refer `data.json` file `assets` property to view all the related dependencies to replicate the component library in your application.
+
 # Copper Framework
 
 Copper Framework (CF) is a lightweight component library designed to be the base for any new project that requires managing and maintaining web components (buttons to modal popups). 
