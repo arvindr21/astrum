@@ -1,0 +1,60 @@
+<!-- Defines element markup -->
+<template id="<% COMP-NAME %>">
+    <style>
+    p {
+        color: green
+    }
+    </style>
+    <p>Hello <strong></strong></p>
+</template>
+<script>
+class <% COMP-CLAS-NAME %>Element extends HTMLElement {
+
+    // https://stackoverflow.com/a/43815078/1015046
+    constructor() {
+        super();
+        const templateContent = this.templateContent = document.currentScript.ownerDocument.querySelector('#<% COMP-NAME %>').content;
+        this.attachShadow({
+                mode: 'open'
+            })
+            .appendChild(this.templateContent.cloneNode(true));
+    }
+
+    render() {
+        this.who = 'World';
+        this.strong = this.shadowRoot.querySelector('strong');
+        this.p = this.shadowRoot.querySelector('p');
+
+        if(this.hasAttribute('color')){
+            this.p.style.color = this.getAttribute('color');
+        }
+
+        if (this.hasAttribute('who')) {
+            var who = this.getAttribute('who');
+            this.strong.textContent = who;
+        } else {
+            this.strong.textContent = this.who;
+        }
+    }
+
+    connectedCallback() {
+        console.log('connectedCallback');
+        this.render();
+    }
+
+    disconnectedCallback() {
+        console.log('disconnectedCallback', arguments);
+    }
+
+    adoptedCallback() {
+        console.log('adoptedCallback', arguments);
+    }
+
+    attributeChangedCallback() {
+        console.log('attributeChangedCallback', arguments);
+        this.render();
+    }
+}
+
+customElements.define('<% COMP-NAME %>', <% COMP-CLAS-NAME %>Element)
+</script>

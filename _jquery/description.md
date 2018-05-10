@@ -1,0 +1,1 @@
+`<% COMP-NAME %>` custom component

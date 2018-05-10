@@ -1,1 +1,0 @@
-Use `.container-fluid` for a full width container, spanning the entire width of the viewport.

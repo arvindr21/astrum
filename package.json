@@ -1,20 +1,41 @@
 {
   "name": "copper-framework",
-  "version": "0.1.0",
-  "description": "Component development Framework",
-  "main": "copper-framework/index.html",
+  "version": "0.3.0",
+  "description": "A lightweight component library designed to be included with any web project.",
+  "main": "./manager/cf.js",
   "scripts": {
-    "start": "http-server -p 5000"
+    "test": "snyk test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arvindr21/copper-framework.git"
   },
   "keywords": [
-    "web-component",
-    "Components",
-    "Framework",
-    "copper-framework"
+    "component",
+    "library",
+    "styleguide",
+    "front-end"
   ],
-  "author": "Arvind Ravulavaru",
+  "author": "Ryan Taylor <ryan@nodividestudio.com> (http://nodividestudio.com)",
   "license": "MIT",
+  "bin": {
+    "cf": "./manager/cf.js"
+  },
+  "bugs": {
+    "url": "https://github.com/arvindr21/copper-framework/issues"
+  },
+  "homepage": "https://github.com/arvindr21/copper-framework#readme",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "commander": "^2.9.0",
+    "cwd": "^0.10.0",
+    "fs-extra": "^0.28.0",
+    "inquirer": "^1.0.2",
+    "is-windows": "^0.2.0",
+    "mkdirp": "^0.5.1",
+    "spawn-npm-install": "^1.2.0"
+  },
   "devDependencies": {
-    "http-server": "^0.11.1"
+    "snyk": "^1.14.3"
   }
 }
