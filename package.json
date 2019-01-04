@@ -30,7 +30,7 @@
     "commander": "^2.9.0",
     "cwd": "^0.10.0",
     "fs-extra": "^0.28.0",
-    "inquirer": "^1.0.2",
+    "inquirer": "^1.2.3",
     "is-windows": "^0.2.0",
     "mkdirp": "^0.5.1",
     "spawn-npm-install": "^1.2.0"
