@@ -4,7 +4,9 @@
   "description": "A lightweight component library designed to be included with any web project.",
   "main": "./manager/cf.js",
   "scripts": {
-    "test": "snyk test"
+    "test": "snyk test",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -33,9 +35,9 @@
     "inquirer": "^1.0.2",
     "is-windows": "^0.2.0",
     "mkdirp": "^0.5.1",
-    "spawn-npm-install": "^1.2.0"
+    "spawn-npm-install": "^1.2.0",
+    "snyk": "^1.316.1"
   },
-  "devDependencies": {
-    "snyk": "^1.14.3"
-  }
+  "devDependencies": {},
+  "snyk": true
 }
